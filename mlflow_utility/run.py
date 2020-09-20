@@ -1,14 +1,13 @@
 from abc import ABC
 import pickle
 import os
-
 import pandas as pd
 import numpy as np 
 from pandas_profiling import ProfileReport
 
 import mlflow
 from  mlflow.tracking import MlflowClient
-from datetime import datetime
+
 
 from . import data_utils
 
@@ -50,26 +49,6 @@ class Run():
         Function to end the logging capability
         """  
         self.mlflow.end_run()
-
-
-    def serialize_for_logging(self, object_to_serialize, name):
-        """
-        Function that serializes an object to use the log artifact
-        Args:
-            object_to_serialize: The desired object to serialize
-
-        Returns:
-            URI Path 
-        """
-        now = datetime.now()
-        file_name = now.strftime("%d%m%Y%H%M%S%d")+name+'.pkl'
-        try:
-            with open(file_name, 'wb') as f:
-                pickle.dump(object_to_serialize, f)
-                return file_name
-        except Exception as e:
-            print(e)
-            raise Exception("cannot serialize the object")
 
 
     def get_active_run_attributes(self):
@@ -129,6 +108,16 @@ class Run():
         profile = ProfileReport(df, title = profile_report_name)
         profile.to_file(full_dir+profile_report_name)
         self.mlflow.log_artifact(full_dir+profile_report_name)
+
+    def log_object(self, obj, name):
+        """
+        Function that logs an object by serializing it
+        Args:
+            name (str): name of the object that will be serialized and logged
+        """
+        full_dir = data_utils.custom_artefact_folder(self.get_latest_run_id() , type = 2)
+        file_name = data_utils.serialize_for_logging(object_to_serialize = obj, folder = full_dir, name = name)
+        self.mlflow.log_artifact(file_name)
 
 
     def get_latest_run_id(self):
