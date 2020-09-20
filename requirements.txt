@@ -1,0 +1,2 @@
+mlflow==1.11
+pandas-profiling==2.9.0
