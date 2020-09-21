@@ -12,7 +12,7 @@ METRICS = ['confusion_matrix','fpr','fnr',
 
 class AutoML():
     """
-    A wrapper class for MLFLOW to remove friction
+    A wrapper class for TPOT to remove friction
     """
 
     def __init__(self,
@@ -27,6 +27,7 @@ class AutoML():
                  **kwargs):
         """
         Class that instatiates the Automl Class
+        For full details of the available parameters, please go to TPOT's doc site.
         """
         # Setup Mlflow Logging
         exp = experiment.Experiment(experiment_name = name)

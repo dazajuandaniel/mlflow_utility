@@ -17,7 +17,11 @@ The package assumes you have Anaconda installed, the requirements.txt file only 
 1. Add widget capability to have a proxy for mlflow UI
 
 ### AutoML
-1. Add capability to test on parameter dataset.
+1. Add logging for all runs in mlflow
+2. Add capability to test on parameter dataset.
+3. Add feature tools integration
+4. Add Shap
+5. Add Feature Selection
 
 ### Other Functionaliy
 * Add proper logging to remove print statements
