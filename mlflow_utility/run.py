@@ -1,6 +1,10 @@
 from abc import ABC
 import pickle
 import os
+from urllib.parse import unquote, urlparse
+
+
+
 import pandas as pd
 import numpy as np 
 from pandas_profiling import ProfileReport
@@ -135,8 +139,47 @@ class Run():
         return run_id
 
 
-    def get_client(self):
+    def get_latest_logged_metrics(self):
         """
-        Function that gets the MLFLOW Client
+        Support function to get the latest logged metrics in the last run
+        Args:
+            None
+        Returns:
+            metrics (dict): Dictionary with the logged metrics
+        
         """
-        return MlflowClient()
+        run_id = self.get_latest_run_id()
+        return self.mlflow.get_run(run_id).data.metrics
+
+
+    def get_latest_logged_parameters(self):
+        """
+        Support function to get the latest logged metrics in the last run
+        Args:
+            None
+        Returns:
+            metrics (dict): Dictionary with the logged metrics
+        
+        """
+        run_id = self.get_latest_run_id()
+        return self.mlflow.get_run(run_id).data.params
+    
+
+    def get_latest_logged_artefacts(self, return_path = False):
+        """
+        Function that returns a list of Artefacts logged in Mlflow
+
+        Args:
+            None
+        Returns:
+            artefacts (list): List of artefacts logged in mlflow
+        """
+        run_id = self.get_latest_run_id()
+        path = self.mlflow.get_run(run_id).info.artifact_uri
+        parsed_path = unquote(urlparse(path).path)[1:]
+
+        if return_path:
+
+            return {'path':parsed_path, 'list_of_artefacts':os.listdir(parsed_path)}
+
+        return os.listdir(parsed_path)
